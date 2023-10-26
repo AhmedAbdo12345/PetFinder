@@ -7,7 +7,7 @@
     tools:context=".presentation.home.HomeFragment">
 
 <com.google.android.material.tabs.TabLayout
-    android:id="@+id/tablayout_animals"
+    android:id="@+id/tablayout_category"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:tabMode="scrollable"
@@ -22,7 +22,7 @@
     android:layout_marginTop="16dp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/tablayout_animals"
-tools:listitem="@layout/rv_animal"
+    app:layout_constraintTop_toBottomOf="@id/tablayout_category"
+    tools:listitem="@layout/rv_animal"
     />
 </androidx.constraintlayout.widget.ConstraintLayout>
