@@ -2,17 +2,17 @@ package com.example.petfinder.data.repository
 
 import com.example.petfinder.data.model.token.AccessTokenResponse
 import com.example.petfinder.data.model.animal.AnimalsResponse
-import com.example.petfinder.data.source.AnimalRemoteDataSource
+import com.example.petfinder.data.source.IRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class AnimalRepoImpl(private val animalRemoteDataSource: AnimalRemoteDataSource) : AnimalRepo {
+class AnimalRepoImpl(private val iRemoteDataSource: IRemoteDataSource) : AnimalRepo {
     override suspend fun getAnimals(): Flow<AnimalsResponse> = flow {
-        emit(animalRemoteDataSource.getAllAnimals())
+        emit(iRemoteDataSource.getAllAnimals())
     }
 
     override suspend fun getAccessToken(): AccessTokenResponse {
-        return animalRemoteDataSource.getToken()
+        return iRemoteDataSource.getToken()
     }
 
 }
