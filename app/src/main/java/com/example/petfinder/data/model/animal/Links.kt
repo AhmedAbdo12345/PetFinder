@@ -1,4 +1,4 @@
-package com.example.petfinder.data.model
+package com.example.petfinder.data.model.animal
 
 data class Links(
     val organization: Organization,
