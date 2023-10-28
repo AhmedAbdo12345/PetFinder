@@ -7,9 +7,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface AnimalRepo {
     suspend fun getAccessToken(): AccessTokenResponse
-    suspend fun getAnimals(): Flow<AnimalsResponse>
+    suspend fun getAnimals(accessToken: String): Flow<AnimalsResponse>
 
-    suspend fun getTypes(): Flow<TypeResponse>
+    suspend fun getTypes(accessToken: String): Flow<TypeResponse>
 
-    suspend fun getAnimalForType(typeAnimal: String): Flow<AnimalsResponse>
+    suspend fun getAnimalForType(accessToken: String,typeAnimal: String): Flow<AnimalsResponse>
 }

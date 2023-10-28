@@ -13,4 +13,7 @@ class AppDependencies {
         val iRemoteDataSource = IRemoteDataSourceImpl(apiService)
         AnimalRepoImpl(iRemoteDataSource)
     }
+   /* val tokenManager by lazy {
+      //  TokenManager.getToken(animalRepo)
+    }*/
 }

@@ -15,23 +15,29 @@ class IRemoteDataSourceImpl(private val apiService: ApiService, private val ioDi
             apiService.getAccessToken("client_credentials","Vx9UJgGvTkHK9K0YtEcqQbpbsjlzePGyrbu3dk0TVTYHVc59Vf","dOSATgMmqiaWyMCzhCmhBasZJSQgMPtXiSKXfBSi")
         }
     }
-    override suspend fun getAllAnimals(): AnimalsResponse {
+    override suspend fun getAllAnimals(accessToken: String): AnimalsResponse {
        return withContext(ioDispatcher){
-           Log.d("zxcv", "getAllAnimals: "+getToken().accessToken)
-           apiService.getAnimals("Bearer "+getToken().accessToken)
+         //  Log.d("zxcv", "getAllAnimals:  "+accessToken+"    cccc")
+
+           apiService.getAnimals("Bearer "+accessToken)
 
        }
     }
 
-    override suspend fun getTypes(): TypeResponse {
+    override suspend fun getTypes(accessToken: String): TypeResponse {
         return withContext(ioDispatcher){
-            apiService.getTypes("Bearer "+getToken().accessToken)
+
+       //     Log.d("zxcv", "getTypes:        "+accessToken+"    cccc")
+
+            apiService.getTypes("Bearer "+accessToken)
         }
     }
 
-    override suspend fun getFilterAnimal( type: String): AnimalsResponse {
+    override suspend fun getFilterAnimal( accessToken: String,type:String): AnimalsResponse {
         return withContext(ioDispatcher){
-            apiService.getFilterAnimal("Bearer "+getToken().accessToken,type)
+       //     Log.d("zxcv", "getFilterAnimal: "+accessToken+"    cccc")
+
+            apiService.getFilterAnimal("Bearer "+accessToken,type)
         }
     }
 

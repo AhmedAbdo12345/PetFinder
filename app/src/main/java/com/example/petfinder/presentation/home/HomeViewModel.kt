@@ -1,5 +1,6 @@
 package com.example.petfinder.presentation.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.petfinder.App
 import com.example.petfinder.ResponseState
+import com.example.petfinder.TokenManager
 import com.example.petfinder.data.model.animal.AnimalsResponse
 import com.example.petfinder.data.model.types.TypeResponse
 import com.example.petfinder.data.repository.AnimalRepo
@@ -27,35 +29,47 @@ class HomeViewModel(private val animalRepo: AnimalRepo): ViewModel() {
     private var _filterAnimal  = MutableStateFlow < ResponseState <AnimalsResponse>> (ResponseState.OnLoading(false))
     val filterAnimal: StateFlow<ResponseState<AnimalsResponse>> = _filterAnimal.asStateFlow()
 
+
+
     fun getAnimals(){
         viewModelScope.launch{
-            animalRepo.getAnimals().catch {
-                _animals.value = ResponseState.OnError(it.localizedMessage)
+            TokenManager.getToken(animalRepo)?.let {
+                animalRepo.getAnimals(it).catch {
+                    _animals.value = ResponseState.OnError(it.localizedMessage)
 
-            }.collect{
-                _animals.value = ResponseState.OnSuccess(it)
+                }.collect{
+                    _animals.value = ResponseState.OnSuccess(it)
+                }
             }
         }
     }
 
     fun getTypes(){
         viewModelScope.launch{
-            animalRepo.getTypes().catch {
-                _types.value = ResponseState.OnError(it.localizedMessage)
+            TokenManager.getToken(animalRepo)?.let {
+                animalRepo.getTypes(it).catch {
+                    _types.value = ResponseState.OnError(it.localizedMessage)
 
-            }.collect{
-                _types.value = ResponseState.OnSuccess(it)
+                }.collect{
+                    _types.value = ResponseState.OnSuccess(it)
+                }
             }
         }
     }
 
-    fun getAnimalFilter(typeAnimal: String){
-        viewModelScope.launch{
-            animalRepo.getAnimalForType(typeAnimal).catch {
-                _filterAnimal.value = ResponseState.OnError(it.localizedMessage)
 
-            }.collect{
-                _filterAnimal.value = ResponseState.OnSuccess(it)
+    fun getAnimalFilter(typeAnimal: String){
+
+        viewModelScope.launch{
+            TokenManager.getToken(animalRepo)?.let {
+
+                Log.d("zxcv", "getFilterAnimal: " + it + "    cccc")
+                animalRepo.getAnimalForType(it, typeAnimal).catch {
+                    _filterAnimal.value = ResponseState.OnError(it.localizedMessage!!)
+
+                }.collect {
+                    _filterAnimal.value = ResponseState.OnSuccess(it)
+                }
             }
         }
     }

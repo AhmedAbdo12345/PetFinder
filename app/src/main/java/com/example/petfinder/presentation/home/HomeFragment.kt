@@ -12,6 +12,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.petfinder.App
+import com.example.petfinder.AppDependencies
 import com.example.petfinder.R
 import com.example.petfinder.ResponseState
 import com.example.petfinder.data.model.animal.Animal
@@ -54,16 +56,15 @@ class HomeFragment : Fragment() {
         tabLayout = binding.tablayoutTypes
 
         homeViewModel.getTypes()
-        fetchtAllAnimalTypesFromAPi()
+
+        fetchTypesFromAPi()
 
         homeViewModel.getAnimals()
 
         getAnimalFilterForEachTab()
-
-
     }
 
-    fun fetchtAllAnimalTypesFromAPi() {
+    fun fetchTypesFromAPi() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.types.collect {
@@ -139,7 +140,7 @@ class HomeFragment : Fragment() {
                 if (animalType != null) {
 
                     if (animalType != "All") {
-                        animalType?.let {
+                        animalType.let {
                             homeViewModel.getAnimalFilter(it)
                         }
 
