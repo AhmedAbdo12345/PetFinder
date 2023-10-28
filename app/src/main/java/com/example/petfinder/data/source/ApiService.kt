@@ -2,6 +2,7 @@ package com.example.petfinder.data.source
 
 import com.example.petfinder.data.model.token.AccessTokenResponse
 import com.example.petfinder.data.model.animal.AnimalsResponse
+import com.example.petfinder.data.model.types.TypeResponse
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -9,12 +10,7 @@ import retrofit2.http.Header
 import retrofit2.http.POST
 
 
-/*data class TokenReqBody(
-    val grant_type: String,
-    val client_id: String,
-    val client_secret: String
-)
-*/
+
 interface ApiService {
 
     @FormUrlEncoded
@@ -29,4 +25,6 @@ interface ApiService {
    suspend fun getAnimals(@Header("Authorization") accessToken: String): AnimalsResponse
 
 
+   @GET("types/")
+   suspend fun getTypes(@Header("Authorization") accessToken: String): TypeResponse
 }
