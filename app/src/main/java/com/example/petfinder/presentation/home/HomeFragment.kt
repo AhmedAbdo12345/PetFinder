@@ -10,8 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.petfinder.R
 import com.example.petfinder.ResponseState
+import com.example.petfinder.data.model.animal.Animal
 import com.example.petfinder.data.model.types.Type
 import com.example.petfinder.data.model.types.TypeResponse
 import com.example.petfinder.databinding.FragmentHomeBinding
@@ -20,8 +23,10 @@ import kotlinx.coroutines.launch
 
 
 class HomeFragment : Fragment() {
+
     private lateinit var binding: FragmentHomeBinding
     private lateinit var tabLayout: TabLayout
+    private lateinit var homeAdapter: HomeAdapter
 
     private val homeViewModel by viewModels<HomeViewModel> {
         HomeViewModel.Factory
@@ -45,12 +50,13 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        homeAdapter = HomeAdapter(::onItemClick,lifecycleScope)
         tabLayout = binding.tablayoutTypes
 
         homeViewModel.getAnimals()
-        collectDataOfAnimalsFromViewModel()
 
+        collectDataOfAnimalsFromViewModel()
+        getAnimalListForEachTab()
 
         homeViewModel.getTypes()
         collectDataOfTypessFromViewModel()
@@ -67,6 +73,14 @@ class HomeFragment : Fragment() {
                         }
 
                         is ResponseState.OnSuccess -> {
+                            homeAdapter.submitList(it.response.animals)
+                            binding.recyclerViewAnimals.apply {
+                                adapter = homeAdapter
+                                setHasFixedSize(true)
+                                layoutManager = GridLayoutManager(context, 1).apply {
+                                    orientation = RecyclerView.VERTICAL
+                                }
+                            }
                         }
 
                         is ResponseState.OnError -> {
@@ -119,15 +133,23 @@ class HomeFragment : Fragment() {
     }
 
     fun getAnimalListForEachTab(){
-        /*tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+      /*  tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
 
-                val animalType = tab.tag as Type
-                collectDataOfAnimalsFromViewModel()
+               // val animalType = tab.tag as Type
+              //  collectDataOfAnimalsFromViewModel()
 
+            }
 
-            }})*/
+            override fun onTabUnselected(tab: TabLayout.Tab?) {}
+
+            override fun onTabReselected(tab: TabLayout.Tab?) {}
+        })*/
     }
 
+
+    fun onItemClick(animal: Animal){
+
+    }
 }
 

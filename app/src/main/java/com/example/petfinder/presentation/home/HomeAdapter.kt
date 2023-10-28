@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import coil.load
 import com.example.petfinder.R
 import com.example.petfinder.data.model.animal.Animal
 import com.example.petfinder.databinding.RvAnimalBinding
@@ -32,9 +33,14 @@ class HomeAdapter(var onItemClick: (Animal) -> Unit, private val scope: Coroutin
         val item = getItem(position)
         holder.binding.apply {
 
-            tvAnimalName.text = item.name
-            tvAnimalGender.text = item.gender
-            tvAnimalType.text = item.type
+            item.photos.getOrNull(0)?.small?.let { imageUrl ->
+                imgAnimal.load(imageUrl){
+                    crossfade(true)
+                }
+            }
+            tvAnimalName.text = "Name: ${item.name}"
+            tvAnimalGender.text = "Gender: ${item.gender}"
+            tvAnimalType.text = "Type: ${item.type}"
 
 
             root.setOnClickListener {

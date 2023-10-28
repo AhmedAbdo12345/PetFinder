@@ -27,4 +27,6 @@ interface ApiService {
 
    @GET("types/")
    suspend fun getTypes(@Header("Authorization") accessToken: String): TypeResponse
+
+
 }
