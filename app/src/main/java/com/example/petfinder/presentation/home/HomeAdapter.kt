@@ -34,7 +34,7 @@ class HomeAdapter(var onItemClick: (Animal) -> Unit, private val scope: Coroutin
         holder.binding.apply {
 
             item.photos.getOrNull(0)?.small?.let { imageUrl ->
-                imgAnimal.load(imageUrl){
+                imgAnimal.load(imageUrl) {
                     crossfade(true)
                 }
             }

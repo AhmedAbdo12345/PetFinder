@@ -15,8 +15,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.petfinder.R
 import com.example.petfinder.ResponseState
 import com.example.petfinder.data.model.animal.Animal
-import com.example.petfinder.data.model.types.Type
-import com.example.petfinder.data.model.types.TypeResponse
 import com.example.petfinder.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayout
 import kotlinx.coroutines.launch
@@ -50,29 +48,66 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        homeAdapter = HomeAdapter(::onItemClick,lifecycleScope)
+
+        homeAdapter = HomeAdapter(::onItemClick, lifecycleScope)
+
         tabLayout = binding.tablayoutTypes
+
+        homeViewModel.getTypes()
+        fetchtAllAnimalTypesFromAPi()
 
         homeViewModel.getAnimals()
 
-        collectDataOfAnimalsFromViewModel()
-        getAnimalListForEachTab()
+        getAnimalFilterForEachTab()
 
-        homeViewModel.getTypes()
-        collectDataOfTypessFromViewModel()
 
     }
 
-    fun collectDataOfAnimalsFromViewModel() {
+    fun fetchtAllAnimalTypesFromAPi() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                homeViewModel.types.collect {
+                    when (it) {
+                        is ResponseState.OnLoading -> {
+                        }
+
+                        is ResponseState.OnSuccess -> {
+                            tabLayout.removeAllTabs()
+
+                            val firstTab = tabLayout.newTab()
+                                .setText("All")
+
+                            tabLayout.addTab(firstTab)
+                            for (x in 0 until it.response.types.size) {
+                                val typeObj = it.response.types[x]
+                                val myTab = tabLayout.newTab()
+                                    .setText(typeObj.name)
+                                tabLayout.addTab(myTab)
+
+                            }
+                        }
+
+                        is ResponseState.OnError -> {
+
+                        }
+
+                    }
+                }
+
+
+            }
+        }
+    }
+
+    fun fetchAllAnimalsFromApi() {
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.animals.collect {
                     when (it) {
-                        is ResponseState.OnLoading -> {
-
-                        }
+                        is ResponseState.OnLoading -> {}
 
                         is ResponseState.OnSuccess -> {
+                            homeAdapter.submitList(null)
                             homeAdapter.submitList(it.response.animals)
                             binding.recyclerViewAnimals.apply {
                                 adapter = homeAdapter
@@ -95,60 +130,62 @@ class HomeFragment : Fragment() {
         }
     }
 
-    fun collectDataOfTypessFromViewModel() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            repeatOnLifecycle(Lifecycle.State.STARTED) {
-                homeViewModel.types.collect {
-                    when (it) {
-                        is ResponseState.OnLoading -> {
 
+    fun getAnimalFilterForEachTab() {
+        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+
+                val animalType = tab.text as? String
+                if (animalType != null) {
+
+                    if (animalType != "All") {
+                        animalType?.let {
+                            homeViewModel.getAnimalFilter(it)
                         }
 
-                        is ResponseState.OnSuccess -> {
-                            tabLayout.removeAllTabs()
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                                homeViewModel.filterAnimal.collect {
 
-                            val firstTab = tabLayout.newTab()
-                                .setText("All")
+                                    when (it) {
+                                        is ResponseState.OnLoading -> {}
 
-                            tabLayout.addTab(firstTab)
-                            for (x in 0 until it.response.types.size){
-                                val typeObj = it.response.types[x]
-                                val myTab = tabLayout.newTab()
-                                    .setText(typeObj.name)
-                                tabLayout.addTab(myTab)
+                                        is ResponseState.OnSuccess -> {
+                                            homeAdapter.submitList(null)
 
+                                            homeAdapter.submitList(it.response.animals)
+                                            binding.recyclerViewAnimals.apply {
+                                                adapter = homeAdapter
+                                                setHasFixedSize(true)
+                                                layoutManager =
+                                                    GridLayoutManager(context, 1).apply {
+                                                        orientation = RecyclerView.VERTICAL
+                                                    }
+                                            }
+                                        }
+
+                                        is ResponseState.OnError -> {}
+
+                                    }
+                                }
                             }
                         }
-
-                        is ResponseState.OnError -> {
-
-                        }
+                    } else {
+                        fetchAllAnimalsFromApi()
 
                     }
                 }
 
 
             }
-        }
-    }
-
-    fun getAnimalListForEachTab(){
-      /*  tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
-            override fun onTabSelected(tab: TabLayout.Tab) {
-
-               // val animalType = tab.tag as Type
-              //  collectDataOfAnimalsFromViewModel()
-
-            }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
 
             override fun onTabReselected(tab: TabLayout.Tab?) {}
-        })*/
+        })
     }
 
-
-    fun onItemClick(animal: Animal){
+    fun onItemClick(animal: Animal) {
 
     }
 }

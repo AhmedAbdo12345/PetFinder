@@ -16,6 +16,10 @@ class AnimalRepoImpl(private val iRemoteDataSource: IRemoteDataSource) : AnimalR
         emit(iRemoteDataSource.getTypes())
     }
 
+    override suspend fun getAnimalForType(typeAnimal: String): Flow<AnimalsResponse> = flow {
+        emit(iRemoteDataSource.getFilterAnimal(typeAnimal))
+    }
+
     override suspend fun getAccessToken(): AccessTokenResponse {
         return iRemoteDataSource.getToken()
     }

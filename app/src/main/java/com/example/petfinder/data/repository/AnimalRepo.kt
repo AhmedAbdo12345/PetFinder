@@ -11,4 +11,5 @@ interface AnimalRepo {
 
     suspend fun getTypes(): Flow<TypeResponse>
 
+    suspend fun getAnimalForType(typeAnimal: String): Flow<AnimalsResponse>
 }

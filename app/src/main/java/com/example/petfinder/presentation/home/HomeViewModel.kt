@@ -24,6 +24,9 @@ class HomeViewModel(private val animalRepo: AnimalRepo): ViewModel() {
     private var _types  = MutableStateFlow < ResponseState <TypeResponse>> (ResponseState.OnLoading(false))
     val types: StateFlow<ResponseState<TypeResponse>> = _types.asStateFlow()
 
+    private var _filterAnimal  = MutableStateFlow < ResponseState <AnimalsResponse>> (ResponseState.OnLoading(false))
+    val filterAnimal: StateFlow<ResponseState<AnimalsResponse>> = _filterAnimal.asStateFlow()
+
     fun getAnimals(){
         viewModelScope.launch{
             animalRepo.getAnimals().catch {
@@ -42,6 +45,17 @@ class HomeViewModel(private val animalRepo: AnimalRepo): ViewModel() {
 
             }.collect{
                 _types.value = ResponseState.OnSuccess(it)
+            }
+        }
+    }
+
+    fun getAnimalFilter(typeAnimal: String){
+        viewModelScope.launch{
+            animalRepo.getAnimalForType(typeAnimal).catch {
+                _filterAnimal.value = ResponseState.OnError(it.localizedMessage)
+
+            }.collect{
+                _filterAnimal.value = ResponseState.OnSuccess(it)
             }
         }
     }

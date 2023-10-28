@@ -11,4 +11,6 @@ interface IRemoteDataSource {
 
     suspend fun getTypes(): TypeResponse
 
+    suspend fun getFilterAnimal(type: String): AnimalsResponse
+
 }

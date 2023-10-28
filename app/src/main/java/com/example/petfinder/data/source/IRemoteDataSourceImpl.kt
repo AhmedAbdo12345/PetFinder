@@ -29,6 +29,11 @@ class IRemoteDataSourceImpl(private val apiService: ApiService, private val ioDi
         }
     }
 
+    override suspend fun getFilterAnimal( type: String): AnimalsResponse {
+        return withContext(ioDispatcher){
+            apiService.getFilterAnimal("Bearer "+getToken().accessToken,type)
+        }
+    }
 
 
 }
