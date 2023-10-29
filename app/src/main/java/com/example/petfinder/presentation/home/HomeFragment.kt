@@ -10,12 +10,11 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.petfinder.App
-import com.example.petfinder.AppDependencies
 import com.example.petfinder.R
-import com.example.petfinder.ResponseState
+import com.example.petfinder.data.model.ResponseState
 import com.example.petfinder.data.model.animal.Animal
 import com.example.petfinder.databinding.FragmentHomeBinding
 import com.google.android.material.tabs.TabLayout
@@ -51,7 +50,7 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeAdapter = HomeAdapter(::onItemClick, lifecycleScope)
+        homeAdapter = HomeAdapter(::onItemClick)
 
         tabLayout = binding.tablayoutTypes
 
@@ -187,6 +186,11 @@ class HomeFragment : Fragment() {
     }
 
     fun onItemClick(animal: Animal) {
+      animal.let {
+            val action: HomeFragmentDirections.ActionHomeFragmentToDetailsFragment =
+                HomeFragmentDirections.actionHomeFragmentToDetailsFragment(animal)
+            findNavController().navigate(action)
+        }
 
     }
 }

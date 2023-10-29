@@ -1,4 +1,4 @@
-package com.example.petfinder.data.source
+package com.example.petfinder.data.api
 
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

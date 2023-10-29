@@ -1,6 +1,6 @@
-package com.example.petfinder.data.source
+package com.example.petfinder.data.remote
 
-import android.util.Log
+import com.example.petfinder.data.api.ApiService
 import com.example.petfinder.data.model.token.AccessTokenResponse
 import com.example.petfinder.data.model.animal.AnimalsResponse
 import com.example.petfinder.data.model.types.TypeResponse

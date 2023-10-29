@@ -11,7 +11,7 @@ import com.example.petfinder.data.model.animal.Animal
 import com.example.petfinder.databinding.RvAnimalBinding
 import kotlinx.coroutines.CoroutineScope
 
-class HomeAdapter(var onItemClick: (Animal) -> Unit, private val scope: CoroutineScope) :
+class HomeAdapter(var onItemClick: (Animal) -> Unit) :
     ListAdapter<Animal, HomeAdapter.HomeViewHolder>(
         HomeDiffUtils()
     ) {
@@ -33,7 +33,7 @@ class HomeAdapter(var onItemClick: (Animal) -> Unit, private val scope: Coroutin
         val item = getItem(position)
         holder.binding.apply {
 
-            item.photos.getOrNull(0)?.small?.let { imageUrl ->
+            item.photos?.getOrNull(0)?.small?.let { imageUrl ->
                 imgAnimal.load(imageUrl) {
                     crossfade(true)
                 }

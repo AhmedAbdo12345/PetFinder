@@ -1,4 +1,4 @@
-package com.example.petfinder.data.source
+package com.example.petfinder.data.remote
 
 import com.example.petfinder.data.model.token.AccessTokenResponse
 import com.example.petfinder.data.model.animal.AnimalsResponse

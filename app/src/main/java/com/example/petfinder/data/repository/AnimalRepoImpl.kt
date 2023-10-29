@@ -3,7 +3,7 @@ package com.example.petfinder.data.repository
 import com.example.petfinder.data.model.token.AccessTokenResponse
 import com.example.petfinder.data.model.animal.AnimalsResponse
 import com.example.petfinder.data.model.types.TypeResponse
-import com.example.petfinder.data.source.IRemoteDataSource
+import com.example.petfinder.data.remote.IRemoteDataSource
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 

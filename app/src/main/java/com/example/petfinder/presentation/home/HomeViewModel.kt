@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.petfinder.App
-import com.example.petfinder.ResponseState
+import com.example.petfinder.data.model.ResponseState
 import com.example.petfinder.TokenManager
 import com.example.petfinder.data.model.animal.AnimalsResponse
 import com.example.petfinder.data.model.types.TypeResponse
@@ -20,13 +20,13 @@ import kotlinx.coroutines.launch
 
 class HomeViewModel(private val animalRepo: AnimalRepo): ViewModel() {
 
-    private var _animals  = MutableStateFlow < ResponseState <AnimalsResponse>> (ResponseState.OnLoading(false))
+    private var _animals  = MutableStateFlow <ResponseState<AnimalsResponse>> (ResponseState.OnLoading(false))
     val animals: StateFlow<ResponseState<AnimalsResponse>> = _animals.asStateFlow()
 
-    private var _types  = MutableStateFlow < ResponseState <TypeResponse>> (ResponseState.OnLoading(false))
+    private var _types  = MutableStateFlow <ResponseState<TypeResponse>> (ResponseState.OnLoading(false))
     val types: StateFlow<ResponseState<TypeResponse>> = _types.asStateFlow()
 
-    private var _filterAnimal  = MutableStateFlow < ResponseState <AnimalsResponse>> (ResponseState.OnLoading(false))
+    private var _filterAnimal  = MutableStateFlow <ResponseState<AnimalsResponse>> (ResponseState.OnLoading(false))
     val filterAnimal: StateFlow<ResponseState<AnimalsResponse>> = _filterAnimal.asStateFlow()
 
 

@@ -1,9 +1,9 @@
-package com.example.petfinder
+package com.example.petfinder.di
 
 import com.example.petfinder.data.repository.AnimalRepoImpl
-import com.example.petfinder.data.source.IRemoteDataSourceImpl
-import com.example.petfinder.data.source.ApiService
-import com.example.petfinder.data.source.RetrofitInstance
+import com.example.petfinder.data.remote.IRemoteDataSourceImpl
+import com.example.petfinder.data.api.ApiService
+import com.example.petfinder.data.api.RetrofitInstance
 
 class AppDependencies {
 

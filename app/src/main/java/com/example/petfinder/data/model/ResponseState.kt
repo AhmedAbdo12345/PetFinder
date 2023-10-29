@@ -1,4 +1,4 @@
-package com.example.petfinder
+package com.example.petfinder.data.model
 
 sealed class ResponseState<T> {
     data class OnSuccess<T>(var response: T) : ResponseState<T>()
