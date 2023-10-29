@@ -19,9 +19,5 @@ class AnimalRepoImpl(private val iRemoteDataSource: IRemoteDataSource) : AnimalR
         emit(iRemoteDataSource.getFilterAnimal(typeAnimal))
     }
 
-   /* override suspend fun getAccessToken(): AccessTokenResponse {
-
-        return iRemoteDataSource.getToken()
-    }*/
 
 }

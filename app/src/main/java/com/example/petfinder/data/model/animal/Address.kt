@@ -1,5 +1,7 @@
 package com.example.petfinder.data.model.animal
 
+import java.io.Serializable
+
 data class Address(
     val address1: String?,
     val address2: String?,
@@ -7,4 +9,4 @@ data class Address(
     val country: String?,
     val postcode: String?,
     val state: String?
-)
+): Serializable

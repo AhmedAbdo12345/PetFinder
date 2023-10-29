@@ -1,6 +1,7 @@
 package com.example.petfinder.data.api
 
 import android.content.SharedPreferences
+import com.google.gson.internal.GsonBuildConfig
 import okhttp3.Authenticator
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -18,12 +19,13 @@ class AnimalAuthenticator(
 ) : Authenticator {
     override fun authenticate(route: Route?, response: Response): Request? {
 
-       val responseToken =  tokenApiService.getAccessToken(
+        val responseToken = tokenApiService.getAccessToken(
             "client_credentials",
             "Vx9UJgGvTkHK9K0YtEcqQbpbsjlzePGyrbu3dk0TVTYHVc59Vf",
             "dOSATgMmqiaWyMCzhCmhBasZJSQgMPtXiSKXfBSi"
         ).execute()
-        shardPreferences.edit().putString("accessToken", "Bearer "+responseToken.body()?.accessToken).commit()
+        shardPreferences.edit()
+            .putString("accessToken", "Bearer " + responseToken.body()?.accessToken).commit()
 
         return response.request
     }
@@ -57,7 +59,8 @@ class RetrofitInstance(private val shardPreferences: SharedPreferences) {
 
 
     val client = OkHttpClient.Builder()
-        .authenticator(AnimalAuthenticator(shardPreferences,tokenApiService)).addNetworkInterceptor(AnimalInterceptor(shardPreferences))
+        .authenticator(AnimalAuthenticator(shardPreferences, tokenApiService))
+        .addNetworkInterceptor(AnimalInterceptor(shardPreferences))
         .addInterceptor(loggingInterceptor)
         .build()
 
@@ -68,7 +71,7 @@ class RetrofitInstance(private val shardPreferences: SharedPreferences) {
         .build()
 
 
-    val api: ApiService by  lazy {
+    val api: ApiService by lazy {
         retrofit.create(ApiService::class.java)
     }
 }

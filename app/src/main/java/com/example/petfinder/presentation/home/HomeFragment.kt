@@ -55,6 +55,13 @@ class HomeFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         homeAdapter = HomeAdapter(::onItemClick)
+        binding.recyclerViewAnimals.apply {
+            adapter = homeAdapter
+            setHasFixedSize(true)
+            layoutManager = GridLayoutManager(context, 1).apply {
+                orientation = RecyclerView.VERTICAL
+            }
+        }
 
         tabLayout = binding.tablayoutTypes
 
@@ -65,7 +72,6 @@ class HomeFragment : Fragment() {
 
         getAnimalFilterForEachTab()
 
-        fetchMoreDataWhenScroll()
 
     }
 
@@ -119,18 +125,15 @@ class HomeFragment : Fragment() {
                         is ResponseState.OnSuccess -> {
                             stateOnSuccess()
 
-                            currentPage = it.response.pagination.current_page
-                            totalPages = it.response.pagination.total_pages
+                            currentPage = it.response.pagination?.current_page!!
+                            totalPages = it.response.pagination?.total_pages!!
 
                             // homeAdapter.submitList(null)
                             homeAdapter.submitList(it.response.animals)
                             binding.recyclerViewAnimals.apply {
                                 adapter = homeAdapter
-                                setHasFixedSize(true)
-                                layoutManager = GridLayoutManager(context, 1).apply {
-                                    orientation = RecyclerView.VERTICAL
-                                }
                             }
+
                         }
 
                         is ResponseState.OnError -> {
@@ -174,11 +177,6 @@ class HomeFragment : Fragment() {
                                             homeAdapter.submitList(it.response.animals)
                                             binding.recyclerViewAnimals.apply {
                                                 adapter = homeAdapter
-                                                setHasFixedSize(true)
-                                                layoutManager =
-                                                    GridLayoutManager(context, 1).apply {
-                                                        orientation = RecyclerView.VERTICAL
-                                                    }
                                             }
                                         }
 
@@ -192,6 +190,7 @@ class HomeFragment : Fragment() {
                         }
                     } else {
                         fetchAllAnimalsFromApi()
+                     //   fetchMoreDataWhenScroll(animalType)
 
                     }
                 }
@@ -233,24 +232,30 @@ class HomeFragment : Fragment() {
         binding.imgvConnectionError.visibility = View.VISIBLE
     }
 
-    fun fetchMoreDataWhenScroll() {
+    fun fetchMoreDataWhenScroll(type:String) {
         binding.recyclerViewAnimals.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
+
+                if (type == "All"){
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
                 val totalItemCount = layoutManager!!.itemCount
                 val lastVisibleItem = layoutManager!!.findLastVisibleItemPosition()
+
                 if (lastVisibleItem == totalItemCount - 1) {
+
+
                     currentPage++
                     // Fetch more data
                     if (currentPage < totalPages) {
-                        Toast.makeText(activity, "$currentPage", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(activity, "$currentPage page", Toast.LENGTH_SHORT).show();
 
                         homeViewModel.getAnimals(currentPage)
                         fetchAllAnimalsFromApi()
                     }
 
                 }
+            }
             }
         })
     }

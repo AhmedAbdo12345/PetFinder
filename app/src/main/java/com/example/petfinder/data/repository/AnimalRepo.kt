@@ -5,7 +5,6 @@ import com.example.petfinder.data.model.types.TypeResponse
 import kotlinx.coroutines.flow.Flow
 
 interface AnimalRepo {
-  //  suspend fun getAccessToken(): AccessTokenResponse
     suspend fun getAnimals(page:Int): Flow<AnimalsResponse>
 
     suspend fun getTypes(): Flow<TypeResponse>

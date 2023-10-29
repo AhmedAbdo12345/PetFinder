@@ -3,15 +3,16 @@ package com.example.petfinder.presentation.details
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.net.toUri
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import coil.load
-import coil.transform.CircleCropTransformation
 import com.example.petfinder.R
 import com.example.petfinder.databinding.FragmentDetailsBinding
+import java.lang.Exception
 
 
 class DetailsFragment : Fragment() {
@@ -27,8 +28,9 @@ class DetailsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-      //  return inflater.inflate(R.layout.fragment_details, container, false)
-        binding = DataBindingUtil.inflate(layoutInflater, R.layout.fragment_details, container, false)
+        //  return inflater.inflate(R.layout.fragment_details, container, false)
+        binding =
+            DataBindingUtil.inflate(layoutInflater, R.layout.fragment_details, container, false)
         binding.lifecycleOwner = this
         return binding.root
     }
@@ -36,12 +38,34 @@ class DetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-      val animal = DetailsFragmentArgs.fromBundle(requireArguments()).animalObject
+        val animal = DetailsFragmentArgs.fromBundle(requireArguments()).animalObject
         animal.let {
-            binding.tvName.text = "Name: ${it.name}"
-            binding.tvSize.text = "Size: ${it.size}"
-            binding.tvColor.text="Primary Color: ${it.colors?.primary}"
-            binding.tvAddress.text= "Address: ${it.contact?.address?.city},${it.contact?.address?.state},${it.contact?.address?.country}"
+
+            if (it.name == null || it.name.isEmpty()) {
+                binding.tvName.text = "Name: NA"
+            } else {
+                binding.tvName.text = "Name: ${it.name}"
+            }
+
+            if (it.size == null || it.size.isEmpty()) {
+                binding.tvSize.text = "Size: NA"
+            } else {
+                binding.tvSize.text = "Size: ${it.size}"
+            }
+
+            if (it.colors?.primary == null || it.colors?.primary.isEmpty()) {
+                binding.tvColor.text = "Primary Color: NA"
+            } else {
+                binding.tvColor.text = "Primary Color: ${it.colors?.primary}"
+            }
+
+            if (it.contact?.address == null) {
+                binding.tvAddress.text = "Address: NA"
+            } else {
+                binding.tvAddress.text =
+                    "Address: ${it.contact?.address?.city},${it.contact?.address?.state},${it.contact?.address?.country}"
+            }
+
 
             it.photos?.getOrNull(0)?.small?.let { imageUrl ->
                 binding.imgVAnimal.load(imageUrl) {
@@ -50,12 +74,30 @@ class DetailsFragment : Fragment() {
                 }
             }
             binding.btnOpenUrl.setOnClickListener {
-                val openURL = Intent(Intent.ACTION_VIEW)
-                openURL.data = Uri.parse(animal.url)
-                startActivity(openURL)
+
+                val webIntent: Intent = Uri.parse("https://www.android.com").let { webpage ->
+                    Intent(Intent.ACTION_VIEW, webpage)
+
+                }
+                startActivity(webIntent)
+
+
+                /* animal.url?.toUri().let {
+                     val openURL = Intent(Intent.ACTION_VIEW,it)
+                     Intent.createChooser(openURL,null)
+                     try {
+                         startActivity(openURL)
+                     }catch (e:Exception){
+
+                     }*/
+
+                  //  if (openURL.resolveActivity(requireContext().packageManager) != null){
+                 //   }
+
+                }
+
             }
 
 
         }
     }
-}

@@ -1,12 +1,10 @@
 package com.example.petfinder.data.remote
 
-import com.example.petfinder.data.model.token.AccessTokenResponse
 import com.example.petfinder.data.model.animal.AnimalsResponse
 import com.example.petfinder.data.model.types.TypeResponse
 
 interface IRemoteDataSource {
 
-   // suspend fun getToken(): AccessTokenResponse
     suspend fun getAllAnimals(page:Int): AnimalsResponse
 
     suspend fun getTypes(): TypeResponse

@@ -10,7 +10,6 @@ import coil.transform.CircleCropTransformation
 import com.example.petfinder.R
 import com.example.petfinder.data.model.animal.Animal
 import com.example.petfinder.databinding.RvAnimalBinding
-import kotlinx.coroutines.CoroutineScope
 
 class HomeAdapter(var onItemClick: (Animal) -> Unit) :
     ListAdapter<Animal, HomeAdapter.HomeViewHolder>(
@@ -41,19 +40,19 @@ class HomeAdapter(var onItemClick: (Animal) -> Unit) :
                     transformations(CircleCropTransformation())
                 }
             }
-            if (item.name == null || item.name.isEmpty()){
+            if (item.name == null || item.name.isEmpty()) {
                 tvAnimalName.text = "Name: NA"
-            }else{
+            } else {
                 tvAnimalName.text = "Name: ${item.name}"
             }
-            if (item.gender == null || item.gender.isEmpty()){
+            if (item.gender == null || item.gender.isEmpty()) {
                 tvAnimalGender.text = "Gender: NA"
-            }else{
+            } else {
                 tvAnimalGender.text = "Gender: ${item.gender}"
             }
-            if (item.type == null || item.type.isEmpty()){
+            if (item.type == null || item.type.isEmpty()) {
                 tvAnimalType.text = "Type: NA"
-            }else{
+            } else {
                 tvAnimalType.text = "Type: ${item.type}"
             }
 
