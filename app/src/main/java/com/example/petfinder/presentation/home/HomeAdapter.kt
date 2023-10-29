@@ -6,6 +6,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.example.petfinder.R
 import com.example.petfinder.data.model.animal.Animal
 import com.example.petfinder.databinding.RvAnimalBinding
@@ -36,11 +37,25 @@ class HomeAdapter(var onItemClick: (Animal) -> Unit) :
             item.photos?.getOrNull(0)?.small?.let { imageUrl ->
                 imgAnimal.load(imageUrl) {
                     crossfade(true)
+                    placeholder(R.drawable.placeholder)
+                    transformations(CircleCropTransformation())
                 }
             }
-            tvAnimalName.text = "Name: ${item.name}"
-            tvAnimalGender.text = "Gender: ${item.gender}"
-            tvAnimalType.text = "Type: ${item.type}"
+            if (item.name == null || item.name.isEmpty()){
+                tvAnimalName.text = "Name: NA"
+            }else{
+                tvAnimalName.text = "Name: ${item.name}"
+            }
+            if (item.gender == null || item.gender.isEmpty()){
+                tvAnimalGender.text = "Gender: NA"
+            }else{
+                tvAnimalGender.text = "Gender: ${item.gender}"
+            }
+            if (item.type == null || item.type.isEmpty()){
+                tvAnimalType.text = "Type: NA"
+            }else{
+                tvAnimalType.text = "Type: ${item.type}"
+            }
 
 
             root.setOnClickListener {

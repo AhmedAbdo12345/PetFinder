@@ -1,5 +1,7 @@
 package com.example.petfinder.presentation.details
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -7,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import coil.load
+import coil.transform.CircleCropTransformation
 import com.example.petfinder.R
 import com.example.petfinder.databinding.FragmentDetailsBinding
 
@@ -43,7 +46,13 @@ class DetailsFragment : Fragment() {
             it.photos?.getOrNull(0)?.small?.let { imageUrl ->
                 binding.imgVAnimal.load(imageUrl) {
                     crossfade(true)
+                    placeholder(R.drawable.placeholder)
                 }
+            }
+            binding.btnOpenUrl.setOnClickListener {
+                val openURL = Intent(Intent.ACTION_VIEW)
+                openURL.data = Uri.parse(animal.url)
+                startActivity(openURL)
             }
 
 

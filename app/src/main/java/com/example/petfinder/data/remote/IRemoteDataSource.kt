@@ -6,11 +6,11 @@ import com.example.petfinder.data.model.types.TypeResponse
 
 interface IRemoteDataSource {
 
-    suspend fun getToken(): AccessTokenResponse
-    suspend fun getAllAnimals(accessToken: String): AnimalsResponse
+   // suspend fun getToken(): AccessTokenResponse
+    suspend fun getAllAnimals(page:Int): AnimalsResponse
 
-    suspend fun getTypes(accessToken: String): TypeResponse
+    suspend fun getTypes(): TypeResponse
 
-    suspend fun getFilterAnimal(accessToken: String,type:String): AnimalsResponse
+    suspend fun getFilterAnimal(type:String): AnimalsResponse
 
 }

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -12,6 +13,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.petfinder.R
 import com.example.petfinder.data.model.ResponseState
@@ -26,6 +28,8 @@ class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
     private lateinit var tabLayout: TabLayout
     private lateinit var homeAdapter: HomeAdapter
+    private var currentPage = 1
+    private var totalPages = 0
 
     private val homeViewModel by viewModels<HomeViewModel> {
         HomeViewModel.Factory
@@ -55,12 +59,14 @@ class HomeFragment : Fragment() {
         tabLayout = binding.tablayoutTypes
 
         homeViewModel.getTypes()
-
         fetchTypesFromAPi()
 
-        homeViewModel.getAnimals()
+        homeViewModel.getAnimals(currentPage)
 
         getAnimalFilterForEachTab()
+
+        fetchMoreDataWhenScroll()
+
     }
 
     fun fetchTypesFromAPi() {
@@ -69,9 +75,11 @@ class HomeFragment : Fragment() {
                 homeViewModel.types.collect {
                     when (it) {
                         is ResponseState.OnLoading -> {
+                            stateOnLoading()
                         }
 
                         is ResponseState.OnSuccess -> {
+                            stateOnSuccess()
                             tabLayout.removeAllTabs()
 
                             val firstTab = tabLayout.newTab()
@@ -88,7 +96,7 @@ class HomeFragment : Fragment() {
                         }
 
                         is ResponseState.OnError -> {
-
+                            stateOnError()
                         }
 
                     }
@@ -104,10 +112,17 @@ class HomeFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 homeViewModel.animals.collect {
                     when (it) {
-                        is ResponseState.OnLoading -> {}
+                        is ResponseState.OnLoading -> {
+                            stateOnLoading()
+                        }
 
                         is ResponseState.OnSuccess -> {
-                            homeAdapter.submitList(null)
+                            stateOnSuccess()
+
+                            currentPage = it.response.pagination.current_page
+                            totalPages = it.response.pagination.total_pages
+
+                            // homeAdapter.submitList(null)
                             homeAdapter.submitList(it.response.animals)
                             binding.recyclerViewAnimals.apply {
                                 adapter = homeAdapter
@@ -119,7 +134,7 @@ class HomeFragment : Fragment() {
                         }
 
                         is ResponseState.OnError -> {
-
+                            stateOnError()
                         }
 
                     }
@@ -148,9 +163,12 @@ class HomeFragment : Fragment() {
                                 homeViewModel.filterAnimal.collect {
 
                                     when (it) {
-                                        is ResponseState.OnLoading -> {}
+                                        is ResponseState.OnLoading -> {
+                                            stateOnLoading()
+                                        }
 
                                         is ResponseState.OnSuccess -> {
+                                            stateOnSuccess()
                                             homeAdapter.submitList(null)
 
                                             homeAdapter.submitList(it.response.animals)
@@ -164,7 +182,9 @@ class HomeFragment : Fragment() {
                                             }
                                         }
 
-                                        is ResponseState.OnError -> {}
+                                        is ResponseState.OnError -> {
+                                            stateOnError()
+                                        }
 
                                     }
                                 }
@@ -186,12 +206,53 @@ class HomeFragment : Fragment() {
     }
 
     fun onItemClick(animal: Animal) {
-      animal.let {
+        animal.let {
             val action: HomeFragmentDirections.ActionHomeFragmentToDetailsFragment =
                 HomeFragmentDirections.actionHomeFragmentToDetailsFragment(animal)
             findNavController().navigate(action)
         }
 
+    }
+
+
+    fun stateOnLoading() {
+        binding.progressbar.visibility = View.VISIBLE
+        binding.recyclerViewAnimals.visibility = View.GONE
+        binding.imgvConnectionError.visibility = View.GONE
+    }
+
+    fun stateOnSuccess() {
+        binding.progressbar.visibility = View.GONE
+        binding.recyclerViewAnimals.visibility = View.VISIBLE
+        binding.imgvConnectionError.visibility = View.GONE
+    }
+
+    fun stateOnError() {
+        binding.progressbar.visibility = View.GONE
+        binding.recyclerViewAnimals.visibility = View.GONE
+        binding.imgvConnectionError.visibility = View.VISIBLE
+    }
+
+    fun fetchMoreDataWhenScroll() {
+        binding.recyclerViewAnimals.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager?
+                val totalItemCount = layoutManager!!.itemCount
+                val lastVisibleItem = layoutManager!!.findLastVisibleItemPosition()
+                if (lastVisibleItem == totalItemCount - 1) {
+                    currentPage++
+                    // Fetch more data
+                    if (currentPage < totalPages) {
+                        Toast.makeText(activity, "$currentPage", Toast.LENGTH_SHORT).show();
+
+                        homeViewModel.getAnimals(currentPage)
+                        fetchAllAnimalsFromApi()
+                    }
+
+                }
+            }
+        })
     }
 }
 

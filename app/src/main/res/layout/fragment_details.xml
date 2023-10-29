@@ -14,7 +14,7 @@
 
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/btn_open_url"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="24dp"
@@ -33,7 +33,7 @@
             android:layout_margin="16dp"
             android:layout_marginTop="48dp"
             android:scaleType="fitCenter"
-            android:src="@drawable/ic_launcher_background"
+            android:src="@drawable/img_not_available"
             app:layout_constraintBottom_toTopOf="@+id/tv_name"
             app:layout_constraintTop_toTopOf="parent"
             tools:layout_editor_absoluteX="16dp" />

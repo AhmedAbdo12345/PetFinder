@@ -1,6 +1,5 @@
 package com.example.petfinder.presentation.home
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -8,7 +7,6 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.petfinder.App
 import com.example.petfinder.data.model.ResponseState
-import com.example.petfinder.TokenManager
 import com.example.petfinder.data.model.animal.AnimalsResponse
 import com.example.petfinder.data.model.types.TypeResponse
 import com.example.petfinder.data.repository.AnimalRepo
@@ -31,29 +29,29 @@ class HomeViewModel(private val animalRepo: AnimalRepo): ViewModel() {
 
 
 
-    fun getAnimals(){
+    fun getAnimals(page:Int){
         viewModelScope.launch{
-            TokenManager.getToken(animalRepo)?.let {
-                animalRepo.getAnimals(it).catch {
+
+                animalRepo.getAnimals(page).catch {
                     _animals.value = ResponseState.OnError(it.localizedMessage)
 
                 }.collect{
                     _animals.value = ResponseState.OnSuccess(it)
                 }
-            }
+
         }
     }
 
     fun getTypes(){
         viewModelScope.launch{
-            TokenManager.getToken(animalRepo)?.let {
-                animalRepo.getTypes(it).catch {
+
+                animalRepo.getTypes().catch {
                     _types.value = ResponseState.OnError(it.localizedMessage)
 
                 }.collect{
                     _types.value = ResponseState.OnSuccess(it)
                 }
-            }
+
         }
     }
 
@@ -61,16 +59,15 @@ class HomeViewModel(private val animalRepo: AnimalRepo): ViewModel() {
     fun getAnimalFilter(typeAnimal: String){
 
         viewModelScope.launch{
-            TokenManager.getToken(animalRepo)?.let {
 
-                Log.d("zxcv", "getFilterAnimal: " + it + "    cccc")
-                animalRepo.getAnimalForType(it, typeAnimal).catch {
+
+                animalRepo.getAnimalForType(typeAnimal).catch {
                     _filterAnimal.value = ResponseState.OnError(it.localizedMessage!!)
 
                 }.collect {
                     _filterAnimal.value = ResponseState.OnSuccess(it)
                 }
-            }
+
         }
     }
     companion object {
